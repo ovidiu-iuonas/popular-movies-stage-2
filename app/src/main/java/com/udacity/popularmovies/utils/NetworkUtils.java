@@ -18,7 +18,7 @@ public class NetworkUtils {
     private static final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie";
     private static final String POPULAR_MOVIES_ENDPOINT = "/popular";
     private static final String TOP_RATED_MOVIES_ENDPOINT = "/top_rated";
-    private static final String API_KEY_QUERY = "api_key=";
+    private static final String API_KEY_QUERY = "api_key";
 
     public static URL buildUrlByEndpointType(Context context, String endpointType){
         Uri buildUri;
