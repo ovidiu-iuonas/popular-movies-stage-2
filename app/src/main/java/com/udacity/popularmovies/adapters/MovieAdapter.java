@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.udacity.popularmovies.R;
 import com.udacity.popularmovies.models.Movie;
+import com.udacity.popularmovies.utils.NetworkUtils;
 
+import java.net.URL;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder>{
@@ -38,8 +40,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         String moviePosterPath = mMoviesList.get(position).getmPosterImageUrl();
-        //TODO Create the URL for the poster of each movie
-        Picasso.with(mContext).load("http://i.imgur.com/DvpvklR.png").into(holder.mMoviePosterImageView);
+        URL moviePosterUrl = NetworkUtils.buildPosterUrl(mContext, moviePosterPath);
+        Picasso.with(mContext).load(moviePosterUrl.toString()).into(holder.mMoviePosterImageView);
     }
 
     @Override

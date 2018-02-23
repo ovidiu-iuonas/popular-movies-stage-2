@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie";
+    private static final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POPULAR_MOVIES_ENDPOINT = "/popular";
     private static final String TOP_RATED_MOVIES_ENDPOINT = "/top_rated";
     private static final String API_KEY_QUERY = "api_key";
@@ -46,7 +47,23 @@ public class NetworkUtils {
             finalUrl = new URL(buildUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.e("NetworkUtils", "Built URI - buildUrlByEndpointType");
+            Log.e("NetworkUtils", "Built URL - buildUrlByEndpointType");
+        }
+
+        return finalUrl;
+    }
+
+    public static URL buildPosterUrl(Context context, String moviePosterUrl){
+        Uri buildUri = Uri.parse(MOVIE_POSTER_BASE_URL).buildUpon()
+                .appendEncodedPath(context.getString(R.string.image_size))
+                .appendEncodedPath(moviePosterUrl).build();
+
+        URL finalUrl = null;
+        try{
+            finalUrl = new URL(buildUri.toString());
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+            Log.e("NetworkUtils", "Build URL - buildPosterUrl");
         }
 
         return finalUrl;
