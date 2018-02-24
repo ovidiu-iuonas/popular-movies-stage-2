@@ -47,7 +47,7 @@ public class NetworkUtils {
             finalUrl = new URL(buildUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.e("NetworkUtils", "Built URL - buildUrlByEndpointType");
+            Log.e("NetworkUtils", "Built URL - buildUrlByEndpointType: ", e);
         }
 
         return finalUrl;
@@ -63,7 +63,7 @@ public class NetworkUtils {
             finalUrl = new URL(buildUri.toString());
         }catch (MalformedURLException e){
             e.printStackTrace();
-            Log.e("NetworkUtils", "Build URL - buildPosterUrl");
+            Log.e("NetworkUtils", "Build URL - buildPosterUrl: ", e);
         }
 
         return finalUrl;
