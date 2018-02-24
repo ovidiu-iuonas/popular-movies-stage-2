@@ -1,6 +1,8 @@
 package com.udacity.popularmovies.models;
 
-public class Movie {
+import java.io.Serializable;
+
+public class Movie implements Serializable{
 
     private int mId;
     private String mTitle;
@@ -8,6 +10,8 @@ public class Movie {
     private String mOverview;
     private String mReleaseDate;
     private double mRating;
+
+    public static final String MOVIE_EXTRA = "SELECTED_MOVIE";
 
     public Movie(int id, String title, String posterImageUrl, String overview, double rating, String releaseDate){
         this.mId = id;

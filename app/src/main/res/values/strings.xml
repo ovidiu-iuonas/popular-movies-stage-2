@@ -1,7 +1,16 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name">Popular Movies App</string>
 
     <string name="API_KEY"></string>
 
     <string name="image_size">w185</string>
+
+    //Labels and text views
+    <string name="movie_release_date">Release Date</string>
+    <string name="user_rating">User Rating</string>
+    <string name="synopsis">Synopsis</string>
+
+    //Menu
+    <string name="top_rated_movies">Top Rated</string>
+    <string name="popular_movies">Popular</string>
 </resources>
