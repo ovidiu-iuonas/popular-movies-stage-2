@@ -1,2 +1,2 @@
-# popular-movies-stage-1
-Popular Movies Stage 1 Udacity project
+# popular-movies-stage-2
+Popular Movies Stage 2 Udacity project
