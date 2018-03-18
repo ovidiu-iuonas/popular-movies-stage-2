@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     String jsonResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
 
-                    return MovieJsonUtils.parseJsonResponse(jsonResponse);
+                    return MovieJsonUtils.parseMoviesListJsonResponse(jsonResponse);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "Error - loadInBackground: ", e);

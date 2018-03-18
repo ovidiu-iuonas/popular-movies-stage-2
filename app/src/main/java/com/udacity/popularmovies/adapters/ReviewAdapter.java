@@ -19,7 +19,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
     private Context mContext;
 
     public interface ReviewAdapterOnClickHandler{
-        void onClick(Review review);
+        void onReviewClick(Review review);
     }
 
     public ReviewAdapter(ReviewAdapterOnClickHandler clickHandler, Context context){
@@ -63,7 +63,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdap
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            mClickHandler.onClick(mReviewsList.get(position));
+            mClickHandler.onReviewClick(mReviewsList.get(position));
         }
     }
 

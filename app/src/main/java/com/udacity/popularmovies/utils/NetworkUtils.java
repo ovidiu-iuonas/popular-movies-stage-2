@@ -19,6 +19,8 @@ public class NetworkUtils {
     private static final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POPULAR_MOVIES_ENDPOINT = "/popular";
     private static final String TOP_RATED_MOVIES_ENDPOINT = "/top_rated";
+    private static final String TRAILERS_ENDPOINT = "/trailers";
+    private static final String REVIEWS_ENDPOINT = "/reviews";
     private static final String API_KEY_QUERY = "api_key";
 
     public static URL buildUrlByEndpointType(Context context, String endpointType){
@@ -50,6 +52,34 @@ public class NetworkUtils {
             Log.e("NetworkUtils", "Built URL - buildUrlByEndpointType: ", e);
         }
 
+        return finalUrl;
+    }
+
+    public static URL buildUrlById(Context context, String detailType, int movieId){
+        Uri buildUri;
+
+        switch (detailType){
+            case "trailers":
+                buildUri = Uri.parse(MOVIES_BASE_URL + "/" + movieId + TRAILERS_ENDPOINT).buildUpon()
+                        .appendQueryParameter(API_KEY_QUERY, context.getResources().getString(R.string.API_KEY))
+                        .build();
+                break;
+            case "reviews":
+                buildUri = Uri.parse(MOVIES_BASE_URL + "/" + movieId + REVIEWS_ENDPOINT).buildUpon()
+                        .appendQueryParameter(API_KEY_QUERY, context.getResources().getString(R.string.API_KEY))
+                        .build();
+                break;
+            default:
+                throw new RuntimeException("Bad detail url type");
+        }
+
+        URL finalUrl = null;
+        try{
+            finalUrl = new URL(buildUri.toString());
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+            Log.e("NetworkUtils", "Built URL - buildUrlById: ", e);
+        }
         return finalUrl;
     }
 
