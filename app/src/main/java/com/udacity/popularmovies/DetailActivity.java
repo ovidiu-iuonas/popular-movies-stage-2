@@ -75,10 +75,8 @@ public class DetailActivity extends AppCompatActivity implements
         LinearLayoutManager linearLayoutManagerTrailer = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mReviewRv.setLayoutManager(linearLayoutManagerReview);
         mReviewRv.setHasFixedSize(true);
-        //mReviewRv.setNestedScrollingEnabled(false);
         mTrailerRv.setLayoutManager(linearLayoutManagerTrailer);
         mTrailerRv.setHasFixedSize(true);
-        //mTrailerRv.setNestedScrollingEnabled(false);
 
         mReviewAdapter = new ReviewAdapter(this, this);
         mTrailerAdapter = new TrailerAdapter(this, this);
@@ -89,13 +87,13 @@ public class DetailActivity extends AppCompatActivity implements
         setMovieData(selectedMovie);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(MOVIE_ID_KEY, selectedMovie.getmId());
+        bundle.putLong(MOVIE_ID_KEY, selectedMovie.getmId());
         getSupportLoaderManager().initLoader(MOVIE_DETAILS_LOADER_ID, bundle, DetailActivity.this);
     }
 
     @Override
     public Loader<ReviewsAndTrailers> onCreateLoader(int i, Bundle bundle) {
-        int movieId = bundle.getInt(MOVIE_ID_KEY);
+        long movieId = bundle.getLong(MOVIE_ID_KEY);
         return new AsyncTaskLoaderDetails(DetailActivity.this, movieId);
     }
 
@@ -104,9 +102,9 @@ public class DetailActivity extends AppCompatActivity implements
         private WeakReference<Context> mContext;
         private List<Review> mReviewsList;
         private List<Trailer> mTrailersList;
-        private int mMovieId;
+        private long mMovieId;
 
-        AsyncTaskLoaderDetails(Context context, int movieId){
+        AsyncTaskLoaderDetails(Context context, long movieId){
             super(context);
             this.mContext = new WeakReference<>(context);
             this.mMovieId = movieId;

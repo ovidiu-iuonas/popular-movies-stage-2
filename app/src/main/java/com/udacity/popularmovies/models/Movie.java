@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Movie implements Serializable{
 
-    private int mId;
+    private long mId;
     private String mTitle;
     private String mPosterImageUrl;
     private String mOverview;
@@ -22,7 +22,7 @@ public class Movie implements Serializable{
         this.mReleaseDate = releaseDate;
     }
 
-    public int getmId() {
+    public long getmId() {
         return mId;
     }
 

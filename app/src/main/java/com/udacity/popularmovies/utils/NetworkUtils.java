@@ -55,7 +55,7 @@ public class NetworkUtils {
         return finalUrl;
     }
 
-    public static URL buildUrlById(Context context, String detailType, int movieId){
+    public static URL buildUrlById(Context context, String detailType, long movieId){
         Uri buildUri;
 
         switch (detailType){
