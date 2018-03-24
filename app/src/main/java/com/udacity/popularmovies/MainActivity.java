@@ -2,6 +2,7 @@ package com.udacity.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -18,13 +19,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.udacity.popularmovies.adapters.MovieAdapter;
+import com.udacity.popularmovies.data.MoviesContract;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.utils.MovieJsonUtils;
 import com.udacity.popularmovies.utils.NetworkUtils;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.udacity.popularmovies.data.MoviesContract.MovieEntry.CONTENT_URI;
 
 public class MainActivity extends AppCompatActivity implements
         MovieAdapter.MovieAdapterOnClickHandler,
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String POPULAR_MOVIES_SORT = "popular";
     private static final String TOP_RATED_MOVIES_SORT = "top_rated";
     private static final String SORT_TYPE_KEY = "sort_type";
+    private static final String FAVORITE_MOVIES_SORT = "favorites";
 
     private static String LAST_SELECTED_SORT = POPULAR_MOVIES_SORT;
 
@@ -98,16 +104,41 @@ public class MainActivity extends AppCompatActivity implements
         public List<Movie> loadInBackground() {
             if (mContext != null) {
                 final Context finalContext = mContext.get();
-                URL movieRequestUrl = NetworkUtils.buildUrlByEndpointType(finalContext, mSortType);
 
-                try {
-                    String jsonResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+                if (mSortType.equals(FAVORITE_MOVIES_SORT)){
+                    Cursor favoritesCursor = getContext().getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI, null, null, null, null);
 
-                    return MovieJsonUtils.parseMoviesListJsonResponse(jsonResponse);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "Error - loadInBackground: ", e);
-                    return null;
+                    List<Movie> favoritesMovieList = new ArrayList<>();
+                    if (favoritesCursor != null) {
+                        try{
+                            while(favoritesCursor.moveToNext()){
+                                long id = favoritesCursor.getLong(favoritesCursor.getColumnIndex(MoviesContract.MovieEntry._ID));
+                                String title = favoritesCursor.getString(favoritesCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TITLE));;
+                                String overview = favoritesCursor.getString(favoritesCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_OVERVIEW));;
+                                String posterImageUrl = favoritesCursor.getString(favoritesCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_POSTER));;
+                                String releaseDate = favoritesCursor.getString(favoritesCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE));
+                                double rating = favoritesCursor.getDouble(favoritesCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_RATING));;
+                                Movie movie = new Movie(id, title, posterImageUrl, overview, rating, releaseDate);
+                                favoritesMovieList.add(movie);
+                            }
+                        } finally {
+                            favoritesCursor.close();
+                        }
+                    }
+
+                    return favoritesMovieList;
+                } else {
+                    URL movieRequestUrl = NetworkUtils.buildUrlByEndpointType(finalContext, mSortType);
+
+                    try {
+                        String jsonResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+
+                        return MovieJsonUtils.parseMoviesListJsonResponse(jsonResponse);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "Error - loadInBackground: ", e);
+                        return null;
+                    }
                 }
             }
             return null;
@@ -158,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.display_popular:
                 bundle.putString(SORT_TYPE_KEY, POPULAR_MOVIES_SORT);
                 LAST_SELECTED_SORT = POPULAR_MOVIES_SORT;
+                break;
+            case R.id.display_favorites:
+                bundle.putString(SORT_TYPE_KEY, FAVORITE_MOVIES_SORT);
+                LAST_SELECTED_SORT = FAVORITE_MOVIES_SORT;
                 break;
             default:
                 bundle.putString(SORT_TYPE_KEY, POPULAR_MOVIES_SORT);

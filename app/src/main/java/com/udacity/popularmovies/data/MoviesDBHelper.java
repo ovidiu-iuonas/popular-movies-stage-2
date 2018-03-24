@@ -7,21 +7,21 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class MoviesDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "movies.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
-    public MoviesDBHelper(Context context){
+    MoviesDBHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        final String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE" +
+        final String SQL_CREATE_MOVIES_TABLE = "CREATE TABLE " +
                 MoviesContract.MovieEntry.TABLE_MOVIES + "(" +
                 MoviesContract.MovieEntry._ID + " INTEGER PRIMARY KEY, " +
                 MoviesContract.MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MoviesContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 MoviesContract.MovieEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
-                MoviesContract.MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL" +
+                MoviesContract.MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                 MoviesContract.MovieEntry.COLUMN_RATING + " REAL NOT NULL);";
         sqLiteDatabase.execSQL(SQL_CREATE_MOVIES_TABLE);
     }

@@ -13,7 +13,7 @@ public class Movie implements Serializable{
 
     public static final String MOVIE_EXTRA = "SELECTED_MOVIE";
 
-    public Movie(int id, String title, String posterImageUrl, String overview, double rating, String releaseDate){
+    public Movie(long id, String title, String posterImageUrl, String overview, double rating, String releaseDate){
         this.mId = id;
         this.mTitle = title;
         this.mPosterImageUrl = posterImageUrl;

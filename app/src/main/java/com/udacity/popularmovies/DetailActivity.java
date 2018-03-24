@@ -1,8 +1,10 @@
 package com.udacity.popularmovies;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -13,12 +15,17 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.popularmovies.adapters.ReviewAdapter;
 import com.udacity.popularmovies.adapters.TrailerAdapter;
+import com.udacity.popularmovies.data.MoviesContract;
+import com.udacity.popularmovies.data.MoviesProvider;
 import com.udacity.popularmovies.models.Movie;
 import com.udacity.popularmovies.models.Review;
 import com.udacity.popularmovies.models.ReviewsAndTrailers;
@@ -44,6 +51,7 @@ public class DetailActivity extends AppCompatActivity implements
     private TextView mMovieReleaseDate;
     private TextView mMovieRating;
     private TextView mMovieSynopsis;
+    private ImageButton mAddToFavBtn;
 
     private ReviewAdapter mReviewAdapter;
     private TrailerAdapter mTrailerAdapter;
@@ -63,7 +71,29 @@ public class DetailActivity extends AppCompatActivity implements
         mTrailerRv = findViewById(R.id.movie_trailers_rv);
         mReviewRv = findViewById(R.id.movies_reviews_rv);
 
-        Movie selectedMovie = (Movie) getIntent().getSerializableExtra(Movie.MOVIE_EXTRA);
+        final Movie selectedMovie = (Movie) getIntent().getSerializableExtra(Movie.MOVIE_EXTRA);
+        checkIfMovieIsAddedToFavorites(selectedMovie.getmId());
+
+        mAddToFavBtn = findViewById(R.id.add_to_favorites_btn);
+        if (mAddToFavBtn != null){
+            mAddToFavBtn.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(MoviesContract.MovieEntry._ID, selectedMovie.getmId());
+                    contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE, selectedMovie.getmTitle());
+                    contentValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, selectedMovie.getmOverview());
+                    contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER, selectedMovie.getmPosterImageUrl());
+                    contentValues.put(MoviesContract.MovieEntry.COLUMN_RATING, selectedMovie.getmRating());
+                    contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, selectedMovie.getmReleaseDate());
+
+                    Uri insertedMovieUri = getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI, contentValues);
+                    if (insertedMovieUri != null){
+                        Toast.makeText(DetailActivity.this, "Movie added to favorites", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -89,6 +119,14 @@ public class DetailActivity extends AppCompatActivity implements
         Bundle bundle = new Bundle();
         bundle.putLong(MOVIE_ID_KEY, selectedMovie.getmId());
         getSupportLoaderManager().initLoader(MOVIE_DETAILS_LOADER_ID, bundle, DetailActivity.this);
+    }
+
+    private void checkIfMovieIsAddedToFavorites(long id){
+        Cursor cursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI, null, MoviesContract.MovieEntry._ID + " = ?", new String[] {String.valueOf(id)}, null);
+        if (cursor != null && cursor.moveToFirst()){
+            Toast.makeText(DetailActivity.this, "Movie is in favorites list", Toast.LENGTH_SHORT).show();
+            cursor.close();
+        }
     }
 
     @Override

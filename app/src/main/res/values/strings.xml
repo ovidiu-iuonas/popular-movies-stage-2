@@ -17,4 +17,5 @@
     //Menu
     <string name="top_rated_movies">Top Rated</string>
     <string name="popular_movies">Popular</string>
+    <string name="favorite_movies">Favorites</string>
 </resources>
