@@ -58,6 +58,8 @@ public class DetailActivity extends AppCompatActivity implements
     private RecyclerView mTrailerRv;
     private RecyclerView mReviewRv;
 
+    private boolean isMovieAddedToFavorites;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,27 +74,21 @@ public class DetailActivity extends AppCompatActivity implements
         mReviewRv = findViewById(R.id.movies_reviews_rv);
 
         final Movie selectedMovie = (Movie) getIntent().getSerializableExtra(Movie.MOVIE_EXTRA);
-        checkIfMovieIsAddedToFavorites(selectedMovie.getmId());
+        isMovieAddedToFavorites = checkIfMovieIsAddedToFavorites(selectedMovie.getmId());
 
         mAddToFavBtn = findViewById(R.id.add_to_favorites_btn);
         if (mAddToFavBtn != null){
             mAddToFavBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(MoviesContract.MovieEntry._ID, selectedMovie.getmId());
-                    contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE, selectedMovie.getmTitle());
-                    contentValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, selectedMovie.getmOverview());
-                    contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER, selectedMovie.getmPosterImageUrl());
-                    contentValues.put(MoviesContract.MovieEntry.COLUMN_RATING, selectedMovie.getmRating());
-                    contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, selectedMovie.getmReleaseDate());
-
-                    Uri insertedMovieUri = getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI, contentValues);
-                    if (insertedMovieUri != null){
-                        Toast.makeText(DetailActivity.this, "Movie added to favorites", Toast.LENGTH_SHORT).show();
-                    }
+                    addOrDeleteMovieFromFav(selectedMovie);
                 }
             });
+            if (isMovieAddedToFavorites){
+                mAddToFavBtn.setImageResource(R.drawable.icon_star_yellow);
+            } else {
+                mAddToFavBtn.setImageResource(R.drawable.icon_star_grey);
+            }
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -121,12 +117,36 @@ public class DetailActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(MOVIE_DETAILS_LOADER_ID, bundle, DetailActivity.this);
     }
 
-    private void checkIfMovieIsAddedToFavorites(long id){
-        Cursor cursor = getContentResolver().query(MoviesContract.MovieEntry.CONTENT_URI, null, MoviesContract.MovieEntry._ID + " = ?", new String[] {String.valueOf(id)}, null);
-        if (cursor != null && cursor.moveToFirst()){
-            Toast.makeText(DetailActivity.this, "Movie is in favorites list", Toast.LENGTH_SHORT).show();
-            cursor.close();
+    private void addOrDeleteMovieFromFav(Movie selectedMovie){
+        if (!isMovieAddedToFavorites){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MoviesContract.MovieEntry._ID, selectedMovie.getmId());
+            contentValues.put(MoviesContract.MovieEntry.COLUMN_TITLE, selectedMovie.getmTitle());
+            contentValues.put(MoviesContract.MovieEntry.COLUMN_OVERVIEW, selectedMovie.getmOverview());
+            contentValues.put(MoviesContract.MovieEntry.COLUMN_POSTER, selectedMovie.getmPosterImageUrl());
+            contentValues.put(MoviesContract.MovieEntry.COLUMN_RATING, selectedMovie.getmRating());
+            contentValues.put(MoviesContract.MovieEntry.COLUMN_RELEASE_DATE, selectedMovie.getmReleaseDate());
+
+            Uri insertedMovieUri = getContentResolver().insert(MoviesContract.MovieEntry.CONTENT_URI, contentValues);
+            if (insertedMovieUri != null){
+                Toast.makeText(DetailActivity.this, "Movie added to favorites", Toast.LENGTH_SHORT).show();
+            }
+            mAddToFavBtn.setImageResource(R.drawable.icon_star_yellow);
+            isMovieAddedToFavorites = true;
+        } else {
+            getContentResolver().delete(MoviesContract.MovieEntry.buildMoviesUri(selectedMovie.getmId()), null, null);
+            mAddToFavBtn.setImageResource(R.drawable.icon_star_grey);
+            isMovieAddedToFavorites = false;
         }
+    }
+
+    private boolean checkIfMovieIsAddedToFavorites(long id){
+        Cursor cursor = getContentResolver().query(MoviesContract.MovieEntry.buildMoviesUri(id), null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()){
+            cursor.close();
+            return true;
+        }
+        return false;
     }
 
     @Override

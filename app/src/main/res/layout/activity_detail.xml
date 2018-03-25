@@ -78,7 +78,6 @@
                     android:background="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/icon_star_grey"
                     android:contentDescription="@null"/>
 
             </LinearLayout>

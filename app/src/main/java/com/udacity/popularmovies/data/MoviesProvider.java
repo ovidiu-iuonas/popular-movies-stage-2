@@ -114,16 +114,12 @@ public class MoviesProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)){
             case MOVIE:{
                 numRowsDeleted = db.delete(MoviesContract.MovieEntry.TABLE_MOVIES, s, strings);
-                String resetIdSql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + MoviesContract.MovieEntry.TABLE_MOVIES + "'";
-                db.execSQL(resetIdSql);
             }
             break;
             case MOVIE_WITH_ID:{
                 numRowsDeleted = db.delete(MoviesContract.MovieEntry.TABLE_MOVIES,
                         MoviesContract.MovieEntry._ID + " = ?",
                         new String[] {String.valueOf(ContentUris.parseId(uri))});
-                String resetIdSql = "DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + MoviesContract.MovieEntry.TABLE_MOVIES + "'";
-                db.execSQL(resetIdSql);
             }
             break;
             default:
