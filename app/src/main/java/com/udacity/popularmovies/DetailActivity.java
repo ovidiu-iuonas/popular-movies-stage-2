@@ -93,7 +93,8 @@ public class DetailActivity extends AppCompatActivity implements
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(selectedMovie.getmTitle());
+            actionBar.setTitle(null);
+            actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
