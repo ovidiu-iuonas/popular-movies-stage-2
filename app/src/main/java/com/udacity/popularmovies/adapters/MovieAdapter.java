@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.popularmovies.R;
@@ -39,6 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
+        holder.mMovieNameTv.setText(mMoviesList.get(position).getmTitle());
         String moviePosterPath = mMoviesList.get(position).getmPosterImageUrl();
         URL moviePosterUrl = NetworkUtils.buildPosterUrl(mContext, moviePosterPath);
         Picasso.with(mContext).load(moviePosterUrl.toString()).into(holder.mMoviePosterImageView);
@@ -53,10 +55,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView mMoviePosterImageView;
+        TextView mMovieNameTv;
 
         MovieAdapterViewHolder(View view){
             super(view);
             mMoviePosterImageView = view.findViewById(R.id.movie_image_iv);
+            mMovieNameTv = view.findViewById(R.id.movie_name_tv);
             view.setOnClickListener(this);
         }
 

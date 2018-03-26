@@ -51,6 +51,7 @@ public class DetailActivity extends AppCompatActivity implements
     private TextView mMovieReleaseDate;
     private TextView mMovieRating;
     private TextView mMovieSynopsis;
+    private TextView mMovieDetailTitle;
     private ImageButton mAddToFavBtn;
 
     private ReviewAdapter mReviewAdapter;
@@ -69,12 +70,17 @@ public class DetailActivity extends AppCompatActivity implements
         mMovieReleaseDate = findViewById(R.id.release_date_tv);
         mMovieRating = findViewById(R.id.rating_tv);
         mMovieSynopsis = findViewById(R.id.synopsis_tv);
+        mMovieDetailTitle = findViewById(R.id.movie_detail_title_tv);
 
         mTrailerRv = findViewById(R.id.movie_trailers_rv);
         mReviewRv = findViewById(R.id.movies_reviews_rv);
 
         final Movie selectedMovie = (Movie) getIntent().getSerializableExtra(Movie.MOVIE_EXTRA);
         isMovieAddedToFavorites = checkIfMovieIsAddedToFavorites(selectedMovie.getmId());
+
+        if (mMovieDetailTitle != null){
+            mMovieDetailTitle.setText(selectedMovie.getmTitle());
+        }
 
         mAddToFavBtn = findViewById(R.id.add_to_favorites_btn);
         if (mAddToFavBtn != null){
